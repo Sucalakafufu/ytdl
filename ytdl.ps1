@@ -31,8 +31,12 @@ param (
 . $PSScriptRoot\ytdl_constants.ps1
 . $PSScriptRoot\ytdl_globalvars.ps1
 
+if ($FileNameConvention -eq "") {
+    $FileNameConvention = $FILENAME_CONVENTION_DEFAULT
+}
+
 if ($Album -OR $Music) {
-    $FileNameConvention = "Music\%(album)s\" + $FileNameConvention
+    $FileNameConvention = "%(album)s\" + $FileNameConvention
 }
 
 if ($AudioOnly -OR $Music) {
@@ -85,10 +89,6 @@ if ($EmbedSubtitles) {
     $embedSubsParameter = $EMBED_SUBS_PARAMETER
 }
 
-if ($FileNameConvention -eq "") {
-    $FileNameConvention = $FILENAME_CONVENTION_DEFAULT
-}
-
 if ($GetId) {
     $getIdParameter = $GET_ID_PARAMETER
 }
@@ -98,7 +98,9 @@ if ($GetTitle) {
 }
 
 if ($Help) {
-    Write-Output "In Progress"
+    Write-Output @"
+        In Progress
+"@
     return
 }
 
