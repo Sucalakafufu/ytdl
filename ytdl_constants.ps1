@@ -30,7 +30,7 @@ $RESOLUTION_720p = "720p"
 $SKIP_DOWNLOAD_PARAMETER = "--skip-download"
 $SUB_LANG_EN = "en,en-US"
 $SUB_LANG_PARAMETER = "--sub-lang"
-$VERSION_NUMBER = "1.3"
+$VERSION_NUMBER = "1.4"
 $WRITE_SUBS_PARAMETER = "--write-subs"
 
 #User Constants
