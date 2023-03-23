@@ -32,6 +32,7 @@ $SUB_LANG_EN = "en,en-US"
 $SUB_LANG_PARAMETER = "--sub-lang"
 $VERSION_NUMBER = "1.4"
 $WRITE_SUBS_PARAMETER = "--write-subs"
+$YOUTUBE_ID_BASE_URL = "https://youtube.com/watch?v="
 
 #User Constants
 $COOKIES_FILE_PATREON = ""
