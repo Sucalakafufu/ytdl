@@ -82,7 +82,7 @@ foreach ($monitoredHash in $monitoredHashArray) {
         foreach ($ID in $IDs) {
             $foundSub = $False
             $subLanguages = $subLang.Split(",")
-            $subs = yt-dlp $LIST_SUBS_PARAMETER $ID
+            $subs = yt-dlp $LIST_SUBS_PARAMETER $YOUTUBE_ID_BASE_URL$ID
 
             for ($i = 0; $i -lt $subs.Length; $i++) {
                 if ($subs[$i].Contains("Available subtitles")) {
@@ -105,7 +105,7 @@ foreach ($monitoredHash in $monitoredHashArray) {
             }
 
             if ($foundSub) {
-                yt-dlp $cookiesParameter $cookies $FORMAT_PARAMETER $format $OUTPUT_PARAMETER $downloadDirectory\$fileNameConvention $matchTitleParameter $matchTitle $rejectTitleParameter $rejectTitle $writeSubsParameter $subLangParameter $subLang $convertSubsParameter $convertSubsFormat $embedSubsParameter $DOWNLOAD_ARCHIVE_PARAMETER $archiveTxtPath $ID
+                yt-dlp $cookiesParameter $cookies $FORMAT_PARAMETER $format $OUTPUT_PARAMETER $downloadDirectory\$fileNameConvention $matchTitleParameter $matchTitle $rejectTitleParameter $rejectTitle $writeSubsParameter $subLangParameter $subLang $convertSubsParameter $convertSubsFormat $embedSubsParameter $DOWNLOAD_ARCHIVE_PARAMETER $archiveTxtPath $YOUTUBE_ID_BASE_URL$ID
             }
         }
     }
