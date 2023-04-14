@@ -143,7 +143,7 @@ if ($SkipDownload) {
 }
 
 if ($SubDirectory -ne "") {
-    $FileNameConvention = "$SubDirectory\$FileNameConvention"
+    $DownloadDirectory = "$DownloadDirectory\$SubDirectory"
 }
 
 if ($UniqueFileNames) {
