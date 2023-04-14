@@ -1,7 +1,6 @@
 [CmdletBinding(DefaultParameterSetName="DefaultParameterSet")]
 
 param (
-    [Parameter(ParameterSetName="DefaultParameterSet")][switch]$Album,
     [Parameter(ParameterSetName="DefaultParameterSet")][String]$Alias = "",
     [Parameter(ParameterSetName="DefaultParameterSet")][switch]$AudioOnly,
     [Parameter(ParameterSetName="DefaultParameterSet")][String]$Cookies = "",
@@ -33,10 +32,6 @@ param (
 
 if ($FileNameConvention -eq "") {
     $FileNameConvention = $FILENAME_CONVENTION_DEFAULT
-}
-
-if ($Album -OR $Music) {
-    $FileNameConvention = "%(album)s\" + $FileNameConvention
 }
 
 if ($AudioOnly -OR $Music) {
@@ -110,6 +105,10 @@ if ($ListSubs) {
 
 if ($MatchTitle -ne "") {
     $matchTitleParameter = $MATCH_TITLE_PARAMETER
+}
+
+if ($Music) {
+    $FileNameConvention = "%(album)s\" + $FileNameConvention
 }
 
 if ($NoOverwrites) {
