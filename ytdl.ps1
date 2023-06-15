@@ -22,6 +22,7 @@ param (
     [Parameter(ParameterSetName="DefaultParameterSet")][ValidateSet("4k","2k","1080p","720p")][String]$Resolution = "",
     [Parameter(ParameterSetName="DefaultParameterSet")][switch]$SkipDownload,
     [Parameter(ParameterSetName="DefaultParameterSet")][String]$SubDirectory = "",
+    [Parameter(ParameterSetName="DefaultParameterSet")][String]$SubLangs = "",
     [Parameter(ParameterSetName="DefaultParameterSet")][switch]$UniqueFileNames,    
     [Parameter(Mandatory=$True,ParameterSetName="DefaultParameterSet",Position=0,ValueFromRemainingArguments=$True)]$URLs = "",
     [Parameter(ParameterSetName="VersionParameterSet")][switch]$Version
@@ -75,9 +76,15 @@ if ($DownloadSubtitles) {
 
 if ($DownloadSubtitles -OR $EmbedSubtitles) {
     $convertSubsFormat = $CONVERT_SUBS_FORMAT_SRT
-    $convertSubsParameter = $CONVERT_SUBS_PARAMETER
-    $subLang = $SUB_LANG_EN
+    $convertSubsParameter = $CONVERT_SUBS_PARAMETER    
     $subLangParameter = $SUB_LANG_PARAMETER
+
+    if ($SubLangs -ne "") {
+        $subLang = $SubLangs
+    }
+    else {
+        $subLang = $SUB_LANG_EN
+    }
 }
 
 if ($EmbedSubtitles) {
