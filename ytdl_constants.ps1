@@ -1,4 +1,4 @@
-$AUDIO_FORMAT_MP3 = "mp3"
+﻿$AUDIO_FORMAT_MP3 = "mp3"
 $AUDIO_FORMAT_PARAMETER = "--audio-format"
 $AUDIO_QUALITY_BEST = 0
 $AUDIO_QUALITY_PARAMETER = "--audio-quality"
@@ -45,13 +45,8 @@ $RESOLUTION_720p = "720p"
 $SKIP_DOWNLOAD_PARAMETER = "--skip-download"
 $SUB_LANG_EN = "en,en-US,en-FmoQciUtYSc"
 $SUB_LANG_PARAMETER = "--sub-lang"
-$VERSION_NUMBER = "1.6"
+$VERSION_NUMBER = "1.7"
 $WRITE_SUBS_PARAMETER = "--write-subs"
 $YOUTUBE_ID_BASE_URL = "https://youtube.com/watch?v="
 
-#User Constants
-#setting cookies from file and browser at the same time could cause issues
-$COOKIES_FILE_PATREON = ""
-$COOKIES_FILE_YOUTUBE = ""
-$COOKIES_BROWSER_DEFAULT = ""
-$DOWNLOAD_DIRECTORY_DEFAULT = ""
+. $PSScriptRoot\ytdl_user_constants.ps1
