@@ -1,5 +1,11 @@
+﻿param(
+    [switch]$Echo
+)
+
 . $PSScriptRoot\ytdl_constants.ps1
 . $PSScriptRoot\ytAutoDownload_constants.ps1
+
+$errorLogPath = "$PSScriptRoot\ytAutoDownload_errors.txt"
 
 foreach ($monitoredHash in $monitoredHashArray) {
     . $PSScriptRoot\ytdl_globalvars.ps1
@@ -97,8 +103,15 @@ foreach ($monitoredHash in $monitoredHashArray) {
 
         $convertSubsFormat = $CONVERT_SUBS_FORMAT_SRT
         $convertSubsParameter = $CONVERT_SUBS_PARAMETER
-        $subLang = $SUB_LANG_EN
-        $subLangParameter = $SUB_LANG_PARAMETER
+
+        if ($monitoredHash.ContainsKey($SUB_LANG_KEY)) {
+            $subLang = $monitoredHash.$SUB_LANG_KEY
+            $subLangParameter = $SUB_LANG_PARAMETER
+        }
+        else {
+            $subLang = $SUB_LANG_ALL
+            $subLangParameter = $SUB_LANG_PARAMETER
+        }
     }
 
     #Checks for subtitles per ID if required
@@ -115,13 +128,24 @@ foreach ($monitoredHash in $monitoredHashArray) {
                     $i++
 
                     while ($i -lt $subs.Length) {
-                        foreach ($subLanguage in $subLanguages) {
-                            if (!$subLanguage.Contains("-")) {
-                                $subLanguage = "$subLanguage "
-                            }
+                        if ($subs[$i].Contains("Available automatic captions")) {
+                            break
+                        }
 
-                            if ($subs[$i].StartsWith($subLanguage)) {
+                        if ($subLang -eq $SUB_LANG_ALL) {
+                            if ($subs[$i].Trim() -ne "" -and !$subs[$i].StartsWith("Language")) {
                                 $foundSub = $True
+                            }
+                        }
+                        else {
+                            foreach ($subLanguage in $subLanguages) {
+                                if (!$subLanguage.Contains("-")) {
+                                    $subLanguage = "$subLanguage "
+                                }
+
+                                if ($subs[$i].StartsWith($subLanguage)) {
+                                    $foundSub = $True
+                                }
                             }
                         }
 
@@ -131,11 +155,31 @@ foreach ($monitoredHash in $monitoredHashArray) {
             }
 
             if ($foundSub) {
-                yt-dlp $cookiesFromBrowserParameter $cookiesFromBrowser $cookiesParameter $cookies $formatSortParameter $formatSort $OUTPUT_PARAMETER $downloadDirectory\$fileNameConvention $matchTitleParameter $matchTitle $rejectTitleParameter $rejectTitle $writeSubsParameter $subLangParameter $subLang $convertSubsParameter $convertSubsFormat $embedSubsParameter $NO_OVERWRITES_PARAMETER $DOWNLOAD_ARCHIVE_PARAMETER $archiveTxtPath $MERGE_OUTPUT_FORMAT_PARAMETER $MERGE_OUTPUT_FORMAT_MP4 $YOUTUBE_ID_BASE_URL$ID
+                if ($Echo) {
+                    Write-Output "yt-dlp $cookiesFromBrowserParameter $cookiesFromBrowser $cookiesParameter $cookies $formatSortParameter $formatSort $OUTPUT_PARAMETER $downloadDirectory\$fileNameConvention $matchTitleParameter $matchTitle $rejectTitleParameter $rejectTitle $writeSubsParameter $subLangParameter $subLang $convertSubsParameter $convertSubsFormat $embedSubsParameter $NO_OVERWRITES_PARAMETER $DOWNLOAD_ARCHIVE_PARAMETER $archiveTxtPath $MERGE_OUTPUT_FORMAT_PARAMETER $MERGE_OUTPUT_FORMAT_MP4 $YOUTUBE_ID_BASE_URL$ID"
+                }
+                else {
+                    yt-dlp $cookiesFromBrowserParameter $cookiesFromBrowser $cookiesParameter $cookies $formatSortParameter $formatSort $OUTPUT_PARAMETER $downloadDirectory\$fileNameConvention $matchTitleParameter $matchTitle $rejectTitleParameter $rejectTitle $writeSubsParameter $subLangParameter $subLang $convertSubsParameter $convertSubsFormat $embedSubsParameter $NO_OVERWRITES_PARAMETER $DOWNLOAD_ARCHIVE_PARAMETER $archiveTxtPath $MERGE_OUTPUT_FORMAT_PARAMETER $MERGE_OUTPUT_FORMAT_MP4 $YOUTUBE_ID_BASE_URL$ID
+
+                    if ($LASTEXITCODE -ne 0) {
+                        $label = if ($monitoredHash.ContainsKey($LABEL_KEY)) { $monitoredHash.$LABEL_KEY } else { "unlabeled" }
+                        Add-Content $errorLogPath "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] EXIT $LASTEXITCODE | $label | $YOUTUBE_ID_BASE_URL$ID"
+                    }
+                }
             }
         }
     }
     else {
-        yt-dlp $cookiesFromBrowserParameter $cookiesFromBrowser $cookiesParameter $cookies $formatSortParameter $formatSort $OUTPUT_PARAMETER $downloadDirectory\$fileNameConvention $matchTitleParameter $matchTitle $rejectTitleParameter $rejectTitle $NO_OVERWRITES_PARAMETER $extractAudioParameter $audioFormatParameter $audioFormat $audioQualityParameter $audioQuality $writeSubsParameter $subLangParameter $subLang $convertSubsParameter $convertSubsFormat $embedSubsParameter $DOWNLOAD_ARCHIVE_PARAMETER $archiveTxtPath $MERGE_OUTPUT_FORMAT_PARAMETER $MERGE_OUTPUT_FORMAT_MP4 $monitoredHash.$URL_KEY
+        if ($Echo) {
+            Write-Output "yt-dlp $cookiesFromBrowserParameter $cookiesFromBrowser $cookiesParameter $cookies $formatSortParameter $formatSort $OUTPUT_PARAMETER $downloadDirectory\$fileNameConvention $matchTitleParameter $matchTitle $rejectTitleParameter $rejectTitle $NO_OVERWRITES_PARAMETER $extractAudioParameter $audioFormatParameter $audioFormat $audioQualityParameter $audioQuality $writeSubsParameter $subLangParameter $subLang $convertSubsParameter $convertSubsFormat $embedSubsParameter $DOWNLOAD_ARCHIVE_PARAMETER $archiveTxtPath $MERGE_OUTPUT_FORMAT_PARAMETER $MERGE_OUTPUT_FORMAT_MP4 $($monitoredHash.$URL_KEY)"
+        }
+        else {
+            yt-dlp $cookiesFromBrowserParameter $cookiesFromBrowser $cookiesParameter $cookies $formatSortParameter $formatSort $OUTPUT_PARAMETER $downloadDirectory\$fileNameConvention $matchTitleParameter $matchTitle $rejectTitleParameter $rejectTitle $NO_OVERWRITES_PARAMETER $extractAudioParameter $audioFormatParameter $audioFormat $audioQualityParameter $audioQuality $writeSubsParameter $subLangParameter $subLang $convertSubsParameter $convertSubsFormat $embedSubsParameter $DOWNLOAD_ARCHIVE_PARAMETER $archiveTxtPath $MERGE_OUTPUT_FORMAT_PARAMETER $MERGE_OUTPUT_FORMAT_MP4 $monitoredHash.$URL_KEY
+            
+            if ($LASTEXITCODE -ne 0) {
+                $label = if ($monitoredHash.ContainsKey($LABEL_KEY)) { $monitoredHash.$LABEL_KEY } else { "unlabeled" }
+                Add-Content $errorLogPath "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] EXIT $LASTEXITCODE | $label | $($monitoredHash.$URL_KEY)"
+            }
+        }
     }
 }

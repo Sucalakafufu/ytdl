@@ -82,9 +82,9 @@ if ($DownloadArchive -ne "") {
     $downloadArchiveParameter = $DOWNLOAD_ARCHIVE_PARAMETER
     $downloadArchiveTextFile = "$DownloadArchive"
 }
-elseif ($DownloadArchive -eq "") {
+elseif ($DOWNLOAD_ARCHIVE_TXT_DEFAULT -ne "") {
     $downloadArchiveParameter = $DOWNLOAD_ARCHIVE_PARAMETER
-    $downloadArchiveTextFile = "$DownloadDirectory\archive.txt"
+    $downloadArchiveTextFile = $DOWNLOAD_ARCHIVE_TXT_DEFAULT
 }
 
 if ($DownloadSubtitles) {
@@ -100,7 +100,7 @@ if ($DownloadSubtitles -OR $EmbedSubtitles) {
         $subLang = $SubLangs
     }
     else {
-        $subLang = $SUB_LANG_EN
+        $subLang = $SUB_LANG_ALL
     }
 }
 
@@ -118,7 +118,61 @@ if ($GetTitle) {
 
 if ($Help) {
     Write-Output @"
-        In Progress
+ytdl $VERSION_NUMBER - A yt-dlp wrapper
+
+USAGE
+    ytdl [OPTIONS] <URL> [URL...]
+
+BASIC
+    -Resolution <4k|2k|1080p|720p>    Set video resolution (default: 1080p)
+                                       4k uses MKV output with x265 re-encode
+    -AudioOnly                         Extract audio as MP3
+    -Music                             Extract audio as MP3, prefix path with artist\album\
+    -NoOverwrites                      Skip files that already exist
+
+DOWNLOAD LOCATION
+    -DownloadDirectory <path>          Directory to download into
+    -SubDirectory <name>               Append a subdirectory to the download path
+    -CD                                Use the current directory as the download directory
+
+SUBTITLES
+    -DownloadSubtitles                 Write subtitles to a separate file
+    -EmbedSubtitles                    Embed subtitles into the video file
+    -SubLangs <langs>                  Subtitle language(s), comma-separated (default: all)
+
+FILTERING
+    -MatchTitle <regex>                Only download videos whose title matches the regex
+    -RejectTitle <regex>               Skip videos whose title matches the regex
+    -Playlist                          Download as playlist, prefix path with playlist name
+
+AUTHENTICATION
+    -Cookies <path>                    Path to a cookies file
+    -CookiesFromBrowser <browser>      Pull cookies from a browser (e.g. chrome, firefox)
+
+ARCHIVE
+    -DownloadArchive <path>            Path to archive file to skip already-downloaded videos
+                                       Falls back to DOWNLOAD_ARCHIVE_TXT_DEFAULT if configured
+
+OUTPUT
+    -FileNameConvention <template>     yt-dlp output template for file naming
+    -UniqueFileNames                   Append video ID to filenames to avoid conflicts
+
+INSPECTION
+    -GetId                             Print video ID(s) without downloading
+    -GetTitle                          Print video title(s) without downloading
+    -ListFormats                       List available formats for the URL
+    -ListSubs                          List available subtitles for the URL
+    -SkipDownload                      Run without downloading (combine with subtitle flags)
+
+ALIASES
+    -Alias <name>                      Run a predefined download profile from ytdl_aliases.ps1
+
+DEBUG
+    -Echo                              Print the yt-dlp command instead of executing it
+
+OTHER
+    -Version                           Print version number
+    -Help                              Show this help message
 "@
     return
 }
