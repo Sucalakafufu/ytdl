@@ -116,11 +116,18 @@ foreach ($monitoredHash in $monitoredHashArray) {
 
     #Checks for subtitles per ID if required
     if ($monitoredHash.ContainsKey($SUBTITLES_REQUIRED_KEY)) {
+        if ($monitoredHash.ContainsKey($SUBTITLES_FORCE_INCLUDE_KEY)) {
+            $subLangRequired = $monitoredHash.$SUBTITLES_FORCE_INCLUDE_KEY
+        }
+        else {
+            $subLangRequired = $subLang
+        }
+
         $IDs = yt-dlp $cookiesParameter $cookies $GET_ID_PARAMETER $matchTitleParameter $matchTitle $rejectTitleParameter $rejectTitle $DOWNLOAD_ARCHIVE_PARAMETER $archiveTxtPath $monitoredHash.$URL_KEY
 
         foreach ($ID in $IDs) {
             $foundSub = $False
-            $subLanguages = $subLang.Split(",")
+            $subLanguagesRequired = $subLangRequired.Split(",")
             $subs = yt-dlp $LIST_SUBS_PARAMETER $YOUTUBE_ID_BASE_URL$ID
 
             for ($i = 0; $i -lt $subs.Length; $i++) {
@@ -132,13 +139,13 @@ foreach ($monitoredHash in $monitoredHashArray) {
                             break
                         }
 
-                        if ($subLang -eq $SUB_LANG_ALL) {
+                        if ($subLangRequired -eq $SUB_LANG_ALL) {
                             if ($subs[$i].Trim() -ne "" -and !$subs[$i].StartsWith("Language")) {
                                 $foundSub = $True
                             }
                         }
                         else {
-                            foreach ($subLanguage in $subLanguages) {
+                            foreach ($subLanguage in $subLanguagesRequired) {
                                 if (!$subLanguage.Contains("-")) {
                                     $subLanguage = "$subLanguage "
                                 }
