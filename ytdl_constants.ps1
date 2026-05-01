@@ -46,7 +46,7 @@ $SKIP_DOWNLOAD_PARAMETER = "--skip-download"
 $SUB_LANG_ALL = "all,-live_chat"
 $SUB_LANG_EN = "en,en-US,en-FmoQciUtYSc"
 $SUB_LANG_PARAMETER = "--sub-lang"
-$VERSION_NUMBER = "1.8.1"
+$VERSION_NUMBER = "1.8.2"
 $WRITE_SUBS_PARAMETER = "--write-subs"
 $YOUTUBE_ID_BASE_URL = "https://youtube.com/watch?v="
 
