@@ -10,6 +10,9 @@ $errorLogPath = "$PSScriptRoot\ytAutoDownload_errors.txt"
 foreach ($monitoredHash in $monitoredHashArray) {
     . $PSScriptRoot\ytdl_globalvars.ps1
 
+    $label = if ($monitoredHash.ContainsKey($LABEL_KEY)) { $monitoredHash.$LABEL_KEY } else { "unlabeled" }
+    Write-Output "--- $label ---"
+
     #clear vars
     $archiveTxtPath = ""
     $cookies = ""
@@ -169,7 +172,6 @@ foreach ($monitoredHash in $monitoredHashArray) {
                     yt-dlp $cookiesFromBrowserParameter $cookiesFromBrowser $cookiesParameter $cookies $formatSortParameter $formatSort $OUTPUT_PARAMETER $downloadDirectory\$fileNameConvention $matchTitleParameter $matchTitle $rejectTitleParameter $rejectTitle $writeSubsParameter $subLangParameter $subLang $convertSubsParameter $convertSubsFormat $embedSubsParameter $NO_OVERWRITES_PARAMETER $DOWNLOAD_ARCHIVE_PARAMETER $archiveTxtPath $MERGE_OUTPUT_FORMAT_PARAMETER $MERGE_OUTPUT_FORMAT_MP4 $YOUTUBE_ID_BASE_URL$ID
 
                     if ($LASTEXITCODE -ne 0) {
-                        $label = if ($monitoredHash.ContainsKey($LABEL_KEY)) { $monitoredHash.$LABEL_KEY } else { "unlabeled" }
                         Add-Content $errorLogPath "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] EXIT $LASTEXITCODE | $label | $YOUTUBE_ID_BASE_URL$ID"
                     }
                 }
@@ -184,7 +186,6 @@ foreach ($monitoredHash in $monitoredHashArray) {
             yt-dlp $cookiesFromBrowserParameter $cookiesFromBrowser $cookiesParameter $cookies $formatSortParameter $formatSort $OUTPUT_PARAMETER $downloadDirectory\$fileNameConvention $matchTitleParameter $matchTitle $rejectTitleParameter $rejectTitle $NO_OVERWRITES_PARAMETER $extractAudioParameter $audioFormatParameter $audioFormat $audioQualityParameter $audioQuality $writeSubsParameter $subLangParameter $subLang $convertSubsParameter $convertSubsFormat $embedSubsParameter $DOWNLOAD_ARCHIVE_PARAMETER $archiveTxtPath $MERGE_OUTPUT_FORMAT_PARAMETER $MERGE_OUTPUT_FORMAT_MP4 $monitoredHash.$URL_KEY
             
             if ($LASTEXITCODE -ne 0) {
-                $label = if ($monitoredHash.ContainsKey($LABEL_KEY)) { $monitoredHash.$LABEL_KEY } else { "unlabeled" }
                 Add-Content $errorLogPath "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] EXIT $LASTEXITCODE | $label | $($monitoredHash.$URL_KEY)"
             }
         }
